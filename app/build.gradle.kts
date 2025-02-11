@@ -24,7 +24,7 @@ android {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                "proguard-rules.pro",
             )
         }
     }
@@ -44,6 +44,7 @@ android {
 }
 
 dependencies {
+    // UI & Compose
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
@@ -52,21 +53,31 @@ dependencies {
     implementation(libs.androidx.ui)
     implementation(libs.androidx.material)
     implementation(libs.androidx.navigation.compose)
-
-    implementation(libs.retrofit)
-    implementation(libs.converter.gson)
-    implementation(libs.hilt.android)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.material3.android)
     implementation(libs.androidx.ui.tooling.preview.android)
     debugImplementation(libs.androidx.ui.tooling)
+
+    // ViewModel & LiveData
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.androidx.lifecycle.livedata.ktx)
+
+    // Retrofit & Gson (API Calls)
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
+
+    // Dependency Injection (Hilt)
+    implementation(libs.hilt.android)
     kapt(libs.hilt.compiler)
 
+    // Room Database (for Favorites)
     implementation(libs.androidx.room.runtime)
     kapt(libs.androidx.room.compiler)
 
+    // WorkManager
     implementation(libs.androidx.work.runtime.ktx)
 
+    // Testing
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
