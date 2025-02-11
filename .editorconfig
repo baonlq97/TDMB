@@ -1,0 +1,9 @@
+[*.{kt,kts}]
+max_line_length=150
+
+# ktlintで無効化するルール
+disabled_rules=no-wildcard-imports
+
+ktlint_function_naming_ignore_when_annotated_with = Composable,Test
+
+indent_size = unset

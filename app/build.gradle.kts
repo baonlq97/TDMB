@@ -58,6 +58,8 @@ dependencies {
     implementation(libs.hilt.android)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.material3.android)
+    implementation(libs.androidx.ui.tooling.preview.android)
+    debugImplementation(libs.androidx.ui.tooling)
     kapt(libs.hilt.compiler)
 
     implementation(libs.androidx.room.runtime)
