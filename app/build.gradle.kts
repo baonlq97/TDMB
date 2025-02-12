@@ -40,6 +40,7 @@ android {
 
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
@@ -65,6 +66,10 @@ dependencies {
     // Retrofit & Gson (API Calls)
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
+
+    // OKHttp3
+    implementation(libs.okhttp)
+    implementation(libs.logging.interceptor)
 
     // Dependency Injection (Hilt)
     implementation(libs.hilt.android)
