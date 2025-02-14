@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.kapt)
     alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.hilt)
     id("kotlinx-serialization")
 }
 
@@ -76,6 +77,7 @@ dependencies {
     // Dependency Injection (Hilt)
     implementation(libs.hilt.android)
     kapt(libs.hilt.compiler)
+    implementation(libs.hilt.navigation)
 
     // Room Database (for Favorites)
     implementation(libs.androidx.room.runtime)

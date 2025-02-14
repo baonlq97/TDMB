@@ -7,7 +7,9 @@ import retrofit2.http.Query
 interface MovieApiService {
     @GET("movie/popular")
     suspend fun getPopularMovies(
-        @Query("api_key") apiKey: String = "YOUR_TMDB_API_KEY",
+        @Query(
+            "api_key",
+        ) apiKey: String = "",
         @Query("page") page: Int = 1,
     ): MovieResponse
 }

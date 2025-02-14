@@ -2,6 +2,8 @@ package com.brandon.tmdb.di
 
 import com.brandon.tmdb.BuildConfig
 import com.brandon.tmdb.data.api.MovieApiService
+import com.brandon.tmdb.data.repository.FavoriteMovieRepositoryImpl
+import com.brandon.tmdb.domain.repository.FavoriteMovieRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -9,7 +11,6 @@ import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
@@ -19,8 +20,12 @@ private const val READ_TIME_OUT = 30L
 @InstallIn(SingletonComponent::class)
 object AppModule {
     @Provides
+    fun provideBaseUrl() = "https://api.themoviedb.org/3/"
+
+    @Provides
     fun provideOkHttpClient() =
-        OkHttpClient.Builder()
+        OkHttpClient
+            .Builder()
             .apply {
                 if (BuildConfig.DEBUG) {
                     addInterceptor(
@@ -33,13 +38,23 @@ object AppModule {
             }.build()
 
     @Provides
-    @Singleton
-    fun provideMovieApiService(): MovieApiService =
-        Retrofit.Builder()
-            .baseUrl("https://api.themoviedb.org/3/")
-            .addConverterFactory(GsonConverterFactory.create())
+    fun provideRetrofit(
+        baseUrl: String,
+        okHttpClient: OkHttpClient,
+    ): Retrofit =
+        Retrofit
+            .Builder()
+            .baseUrl(baseUrl)
+            .client(okHttpClient)
+//            .addConverterFactory(GsonConverterFactory.create())
             .build()
-            .create(MovieApiService::class.java)
+
+    @Provides
+    @Singleton
+    fun provideMovieApiService(retrofit: Retrofit): MovieApiService = retrofit.create(MovieApiService::class.java)
+
+    @Provides
+    fun provideFavoriteMovieRepository(apiService: MovieApiService): FavoriteMovieRepository = FavoriteMovieRepositoryImpl(apiService)
 
 //    @Provides
 //    @Singleton

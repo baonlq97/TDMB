@@ -1,6 +1,7 @@
 package com.brandon.tmdb
 
 import android.app.Application
+import dagger.hilt.android.HiltAndroidApp
 
-class TMDBApplication: Application() {
-}
+@HiltAndroidApp
+class TMDBApplication : Application()
