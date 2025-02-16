@@ -25,7 +25,7 @@ class FavoriteMoviesViewModel
 
         private fun fetchFavoriteMovies() {
             viewModelScope.launch {
-                val data = repository.getMovies()
+                _favoriteMovies.value =  repository.getMovies()
             }
         }
     }

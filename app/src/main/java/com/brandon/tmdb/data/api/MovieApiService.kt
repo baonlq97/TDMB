@@ -1,5 +1,6 @@
 package com.brandon.tmdb.data.api
 
+import com.brandon.tmdb.BuildConfig
 import com.brandon.tmdb.data.models.MovieResponse
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -9,7 +10,7 @@ interface MovieApiService {
     suspend fun getPopularMovies(
         @Query(
             "api_key",
-        ) apiKey: String = "",
+        ) apiKey: String = BuildConfig.API_KEY,
         @Query("page") page: Int = 1,
     ): MovieResponse
 }

@@ -8,9 +8,12 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import kotlinx.serialization.json.Json
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
+import retrofit2.converter.kotlinx.serialization.asConverterFactory
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
@@ -23,9 +26,29 @@ object AppModule {
     fun provideBaseUrl() = "https://api.themoviedb.org/3/"
 
     @Provides
+    @Singleton
+    fun providesNetworkJson(): Json = Json {
+        ignoreUnknownKeys = true
+    }
+
+    @Provides
     fun provideOkHttpClient() =
         OkHttpClient
             .Builder()
+//            .addInterceptor { chain ->
+//                val original = chain.request()
+//                val originalHttpUrl = original.url
+//
+//                val url = originalHttpUrl.newBuilder()
+//                    .addQueryParameter("api_key", BuildConfig.API_KEY)
+//                    .build()
+//
+//                val request = original.newBuilder()
+//                    .url(url)
+//                    .build()
+//
+//                chain.proceed(request)
+//            }
             .apply {
                 if (BuildConfig.DEBUG) {
                     addInterceptor(
@@ -39,6 +62,7 @@ object AppModule {
 
     @Provides
     fun provideRetrofit(
+        json: Json,
         baseUrl: String,
         okHttpClient: OkHttpClient,
     ): Retrofit =
@@ -46,6 +70,9 @@ object AppModule {
             .Builder()
             .baseUrl(baseUrl)
             .client(okHttpClient)
+            .addConverterFactory(
+                json.asConverterFactory("application/json".toMediaType())
+            )
 //            .addConverterFactory(GsonConverterFactory.create())
             .build()
 

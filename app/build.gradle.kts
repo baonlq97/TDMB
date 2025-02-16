@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.konan.properties.loadProperties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -6,6 +8,7 @@ plugins {
     alias(libs.plugins.hilt)
     id("kotlinx-serialization")
 }
+
 
 android {
     namespace = "com.brandon.tmdb"
@@ -21,12 +24,20 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    val localProperties = loadProperties("$rootDir/local.properties")
     buildTypes {
         release {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",
+            )
+        }
+        debug {
+            buildConfigField(
+                "String",
+                "API_KEY",
+                "\"${localProperties["API_KEY"] ?: ""}\""
             )
         }
     }
@@ -65,9 +76,9 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.lifecycle.livedata.ktx)
 
-    // Retrofit & Gson (API Calls)
+    // Retrofit & Kotlinx converter (API Calls)
     implementation(libs.retrofit)
-    implementation(libs.converter.gson)
+    implementation(libs.converter.kotlinx.serialization)
     implementation(libs.kotlinx.serialization.json)
 
     // OKHttp3
