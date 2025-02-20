@@ -1,5 +1,7 @@
 package com.brandon.tmdb.di
 
+import android.content.Context
+import androidx.work.WorkManager
 import com.brandon.tmdb.BuildConfig
 import com.brandon.tmdb.data.api.MovieApiService
 import com.brandon.tmdb.data.repository.FavoriteMovieRepositoryImpl
@@ -7,6 +9,7 @@ import com.brandon.tmdb.domain.repository.FavoriteMovieRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
@@ -23,33 +26,37 @@ private const val READ_TIME_OUT = 30L
 @InstallIn(SingletonComponent::class)
 object AppModule {
     @Provides
-    fun provideBaseUrl() = "https://api.themoviedb.org/3/"
+    fun provideBaseUrl() = BuildConfig.BASE_URL
 
     @Provides
     @Singleton
-    fun providesNetworkJson(): Json = Json {
-        ignoreUnknownKeys = true
-    }
+    fun providesNetworkJson(): Json =
+        Json {
+            ignoreUnknownKeys = true
+        }
 
     @Provides
     fun provideOkHttpClient() =
         OkHttpClient
             .Builder()
-//            .addInterceptor { chain ->
-//                val original = chain.request()
-//                val originalHttpUrl = original.url
-//
-//                val url = originalHttpUrl.newBuilder()
-//                    .addQueryParameter("api_key", BuildConfig.API_KEY)
-//                    .build()
-//
-//                val request = original.newBuilder()
-//                    .url(url)
-//                    .build()
-//
-//                chain.proceed(request)
-//            }
-            .apply {
+            .addInterceptor { chain ->
+                val original = chain.request()
+                val originalHttpUrl = original.url
+
+                val url =
+                    originalHttpUrl
+                        .newBuilder()
+                        .addQueryParameter("api_key", BuildConfig.API_KEY)
+                        .build()
+
+                val request =
+                    original
+                        .newBuilder()
+                        .url(url)
+                        .build()
+
+                chain.proceed(request)
+            }.apply {
                 if (BuildConfig.DEBUG) {
                     addInterceptor(
                         HttpLoggingInterceptor().apply {
@@ -71,10 +78,8 @@ object AppModule {
             .baseUrl(baseUrl)
             .client(okHttpClient)
             .addConverterFactory(
-                json.asConverterFactory("application/json".toMediaType())
-            )
-//            .addConverterFactory(GsonConverterFactory.create())
-            .build()
+                json.asConverterFactory("application/json".toMediaType()),
+            ).build()
 
     @Provides
     @Singleton
@@ -99,8 +104,8 @@ object AppModule {
 //    @Provides
 //    fun provideMovieDao(database: MovieDatabase) = database.movieDao()
 
-//    @Provides
-//    fun provideWorkManager(
-//        @ApplicationContext context: Context,
-//    ): WorkManager = WorkManager.getInstance(context)
+    @Provides
+    fun provideWorkManager(
+        @ApplicationContext context: Context,
+    ): WorkManager = WorkManager.getInstance(context)
 }

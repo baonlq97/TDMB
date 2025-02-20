@@ -9,7 +9,6 @@ plugins {
     id("kotlinx-serialization")
 }
 
-
 android {
     namespace = "com.brandon.tmdb"
     compileSdk = 35
@@ -22,10 +21,22 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField(
+            "String",
+            "BASE_URL",
+            "\"https://api.themoviedb.org/3/\"",
+        )
+
+        buildConfigField(
+            "String",
+            "BASE_IMAGE_URL",
+            "\"https://image.tmdb.org/t/p/original\"",
+        )
     }
 
-    val localProperties = loadProperties("$rootDir/local.properties")
     buildTypes {
+        val localProperties = loadProperties("$rootDir/local.properties")
         release {
             isMinifyEnabled = false
             proguardFiles(
@@ -37,7 +48,7 @@ android {
             buildConfigField(
                 "String",
                 "API_KEY",
-                "\"${localProperties["API_KEY"] ?: ""}\""
+                "\"${localProperties["API_KEY"] ?: ""}\"",
             )
         }
     }
@@ -71,6 +82,10 @@ dependencies {
     implementation(libs.androidx.material3.android)
     implementation(libs.androidx.ui.tooling.preview.android)
     debugImplementation(libs.androidx.ui.tooling)
+
+    // Image loader
+    implementation(libs.coil.compose)
+    implementation(libs.coil.network.okhttp)
 
     // ViewModel & LiveData
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
